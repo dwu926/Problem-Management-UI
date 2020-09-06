@@ -3,14 +3,14 @@
 *,
 *::after,
 *::before {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 html {
-  font-size: 4px; //1 rem = 4px; 4px/16px = 25% (In Browser)
-  font-family: 'Roboto', sans-serif;
+  font-size: 16px; //1 rem = 4px; 4px/16px = 25% (In Browser)
+  font-family: "Roboto", sans-serif;
 }
 
 .App {
@@ -23,12 +23,12 @@ html {
   overflow-y: auto;
   border-top: 8px solid rgb(0, 128, 95);
   width: 95%;
-  margin: 10rem auto;
+  margin: 2.5rem auto;
 }
 
 .table {
   border-collapse: collapse;
-  font-size: 4rem;
+  font-size: 1rem;
   width: 100%;
   box-shadow: 0px 2px 6px 1px #ddd;
   border-radius: 4px;
@@ -41,30 +41,30 @@ html {
         position: sticky;
         top: -1px;
         background-color: #1b1616;
-        padding: 4rem 5rem;
+        padding: 1rem 1.25rem;
         &:last-of-type {
           border-bottom: none;
         }
-        .cell-direction{
+        .cell-direction {
           display: flex;
           cursor: pointer;
           svg {
-            font-size: 4rem;
+            font-size: 1rem;
           }
         }
       }
     }
   }
-  &__body{
+  &__body {
     .table-row {
       border-bottom: 1px solid #dddddd;
       text-align: inherit;
-      height: 14rem;
+      height: 4rem;
       &:hover {
         background-color: #1e86cc;
       }
       &__cell {
-        padding: 4rem 5rem;
+        padding: 1rem 1.25rem;
       }
       .promo-name {
         color: rgb(116, 243, 211);
@@ -77,49 +77,49 @@ html {
 .checkbox {
   display: inline;
   &__container {
-      position: relative;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+
+    .checkbox-input {
+      position: absolute;
+      opacity: 0;
       cursor: pointer;
-      user-select: none;
+      height: 0;
+      width: 0;
+    }
 
-      .checkbox-input {
-          position: absolute;
-          opacity: 0;
-          cursor: pointer;
-          height: 0;
-          width: 0;
+    .checkbox-input:checked ~ .checkmark {
+      background-color: black;
+    }
+
+    .checkbox-input:checked ~ .checkmark:after {
+      display: block;
+    }
+
+    .checkbox-label {
+      font-size: 1rem;
+      padding-left: 2rem;
+    }
+
+    .checkmark {
+      position: absolute;
+      height: 1.25rem;
+      width: 1.25rem;
+      border: 2px solid black;
+      border-radius: 0.25rem;
+
+      &::after {
+        content: "";
+        position: absolute;
+        display: none;
+        left: 0.25rem;
+        width: 0.4rem;
+        height: 0.8rem;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
       }
-
-      .checkbox-input:checked ~ .checkmark {
-          background-color: black;
-      }
-
-      .checkbox-input:checked ~ .checkmark:after {
-          display: block;
-      }
-
-      .checkbox-label {
-          font-size: 3.5rem;
-          padding-left: 8rem;
-      }
-
-      .checkmark {
-          position: absolute;
-          height: 5rem;
-          width: 5rem;
-          border: 2px solid black;
-          border-radius: 1rem;
-
-          &::after {
-              content: '';
-              position: absolute;
-              display: none;
-              left: 1rem;
-              width: 1.5rem;
-              height: 3rem;
-              border: solid white;
-              border-width: 0 2px 2px 0;
-              transform: rotate(45deg);
-          }
-      }
+    }
   }
 }
