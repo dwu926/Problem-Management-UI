@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {useState, useEffect, useRef }  from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import "./table/index.scss";
@@ -15,8 +15,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
-import axios from "axios";
-import Main from "./component/Main";
+import Comment from "./component/Comment";
 
 const headCells = [
   {
@@ -29,65 +28,56 @@ const headCells = [
     id: "Comments/RCA",
     numeric: true,
     disablePadding: false,
-    label: "Comments/RCA",
+    label: "Root Cause Analysis",
   },
   {
-    id: "ErrorTitle",
+    id: "ExceptionCategory",
     numeric: true,
     disablePadding: false,
-    label: "ErrorTitle",
+    label: "Exception Category",
   },
-  { id: "ErrorMain", numeric: true, disablePadding: false, label: "ErrorMain" },
-  // { id: "ErrorFeatures", numeric: true, disablePadding: false, label: "ErrorFeatures" },
+  {
+    id: "CountPerError",
+    numeric: true,
+    disablePadding: false,
+    label: "Count Per Error",
+  },
+  {
+    id: "TimeofFirstOccurance",
+    numeric: true,
+    disablePadding: false,
+    label: "Time of First Occurance",
+  },
+  {
+    id: "TimeofLastOccurance",
+    numeric: true,
+    disablePadding: false,
+    label: "Time of Last Occurance",
+  },
 ];
 
 const rows = [
   createData(
     "java.lang.IllegalArgumentException",
+    "RCA/Comments",
     "RuleDataAuditLogUtil",
-    "java.lang.IllegalArgumentException: hasAbsencesInPeriod() :Incomplete/Inconsistent input parameters",
-    "list of features",
-    "RCA/Comments"
-  ),
-  createData(
-    "java.lang.IllegalArgumentException",
-    "FBSectUI_Objective",
-    "java.lang.IllegalArgumentException: Illegal string value 'M'.  Legal values are 'O', 'G', 'T', 'R', 'S', 'V', 'F', 'W', 'Q', 'C', 'GM+'.",
-    "list of features",
-    "RCA/Comments"
-  ),
-  createData(
-    "java.lang.IllegalArgumentException",
-    "0COEMEventEditHandler",
-    "java.lang.IllegalArgumentException: ContentTypeList does not contain a supported content type: image/*;q=0.8",
-    "list of features",
-    "RCA/Comments"
-  ),
-  createData(
-    "java.lang.IllegalArgumentException",
-    "RCMAssessmentScoreSubscriber",
-    "Caused by: java.lang.IllegalArgumentException: Object Definition is Null for provided Object Type. Please ensure that the corresponding feature is enabled via Upgrade Center or Provisioning.",
-    "List of features",
-    "RCA/Comments"
-  ),
-  createData(
-    "java.lang.IllegalArgumentException",
-    "RuleDataAuditLogUtil",
-    "java.lang.IllegalArgumentException: Object Definition is Null for provided Object Type. Please ensure that the corresponding feature is enabled via Upgrade Center or Provisioning.",
-    "List of features",
-    "RCA/Comments"
-  ),
-  createData(
-    "java.lang.IllegalArgumentException",
-    "RuleDataAuditLogUtil",
-    "java.lang.IllegalArgumentException: Mandatory parameters were not supplied.",
-    "list of features",
-    "RCA/Comments"
-  ),
+    "53",
+    "10/Sep/2020 10:57:08b",
+    
+    ),
+    createData(
+      "java.lang.IllegalArgumentException",
+      "RCA/Comments",
+      "FBSectUI_Objective",
+      "27",
+      "10/Sep/2020 10:55:28",
+      
+    ),
 ];
 
-function createData(ExceptionName, RCA, ErrorTitle, ErrorMain) {
-  return { ExceptionName, RCA, ErrorTitle, ErrorMain };
+
+function createData(ExceptionName, RCA, ExceptionCategory, CountPerError, TimeofFirstOccurance, TimeofLastOccurance, index) {
+  return { ExceptionName, RCA, ExceptionCategory, CountPerError, TimeofFirstOccurance, TimeofLastOccurance, index };
 }
 
 function getSorting(order, orderBy) {
@@ -122,10 +112,13 @@ function stableSort(array, cmp) {
 function App() {
   const [currentTime, setCurrentTime] = useState(1);
   const [ExceptionName, setExceptionName] = useState([]);
-  const [ErrorTitle, setErrorTitle] = useState([]);
-  const [ErrorMain, setErrorMain] = useState([]);
+  const [ExceptionCategory, setExceptionCategory] = useState([]);
+  const [CountPerError, setCountPerError] = useState([]);
+  const [TimeofFirstOccurance, setTimeofFirstOccurance] = useState([]);
+  const [TimeofLastOccurance, setTimeofLastOccurance] = useState([]);
   const [ErrorFeatures, setErrorFeatures] = useState([]);
   const [RCA, setRCA] = useState([]);
+
   const inputRef = useRef();
 
   const [currentError, setCurrentError] = useState(null);
@@ -136,29 +129,36 @@ function App() {
       .then((data) => {
         setCurrentTime(data.time);
         setExceptionName(data.exception_name);
-        setErrorTitle(data.error_title);
-        setErrorMain(data.error_main);
+        setExceptionCategory(data.exception_category);
+        setCountPerError(data.count_per_error);
+        setTimeofFirstOccurance(data.time_first_occurance);
+        setTimeofLastOccurance(data.time_last_occurance);
         setErrorFeatures(data.error_features);
         setRCA(data.RCA);
-      });
+      });  
   }, []);
 
   let row = {};
   var i;
   const Rows = [];
-  var string1, string2, string3, string4;
+  var string1, string2, string3, string4, string5, string6, index; //(ExceptionName, RCA, ExceptionCategory, TotalCount, TimeofLastOccurance)
 
   for (i = 0; i < ExceptionName.length; i++) {
+
     string1 = ExceptionName[i];
     string2 = RCA[i];
-    string3 = ErrorTitle[i];
-    string4 = ErrorMain[i];
-
-    row = createData(string1, string2, string3, string4);
+    string3 = ExceptionCategory[i];
+    string4 = CountPerError[i];
+    string5 = TimeofFirstOccurance[i];
+    string6 = TimeofLastOccurance[i];
+    index = i;
+    
+    row = createData(string1, string2, string3, string4, string5, string6, index);
     Rows.push(row);
     // console.log(row)
-  }
 
+  }
+  
   console.log(rows);
   console.log(Rows);
   const n = Rows.length;
@@ -166,27 +166,29 @@ function App() {
   const myParams = new FormData();
   const mydata = {
     firstname: "Dong",
-    lastname: "Wu",
+    lastname: "Wu"
   };
 
   myParams.append("data", mydata);
 
   /** this will send request to get exception and set to state, this will also trigger dialog popup */
-  const handleGetErrorDetail = (expName) => {
-    fetch("/api/log", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        setCurrentError(JSON.stringify(json));
-      })
-      .catch((error) => {
-        console.log(error);
-        //Perform action based on error
-      });
+  const handleGetErrorDetail = (index) => {
+    console.log(ErrorFeatures[index])
+     setCurrentError( ErrorFeatures[index].join('\n\r'));
+    // fetch(`/api/log/${index}`,{
+    //   method: "GET",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // })
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     setCurrentError(JSON.stringify(json));
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     //Perform action based on error
+    //   });
   };
 
   /** clear the error message, also close the dialog */
@@ -240,10 +242,11 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <h1>
-          Central Feedback System ({currentTime} | Error count: {n} )
+          Problem Management System ({currentTime} | Error count: {n} )
         </h1>
       </header>
       <main className="App-main" key={"this is the main page"}>
+    
         <input
           ref={inputRef}
           type="file"
@@ -259,10 +262,10 @@ function App() {
           +Upload
         </Button>
         <br />
-        <Main />
+        <p><a href="http://localhost:5000/api/main" className="App-main-button">Upload Your Own Log File For Analysis</a></p>
         <br />
         <h2>
-          This is the table of error/exception extract fron the raw log file
+          This is the table of error/exception extract from the stream of log file 
           with noise reduction
         </h2>
         <TableContainer>
@@ -275,12 +278,12 @@ function App() {
             />
             <TableBody>
               {stableSort(Rows, getSorting(order, orderBy)).map(
-                ({ ExceptionName, RCA, ErrorTitle, ErrorMain }) => {
+                ({ ExceptionName, RCA, ExceptionCategory, CountPerError, TimeofFirstOccurance, TimeofLastOccurance, index }) => {
                   const cellClickHandler = () => {
-                    handleGetErrorDetail(ExceptionName);
+                    handleGetErrorDetail(index);
                   };
                   return (
-                    <TableRow key={RCA}>
+                    <TableRow key={ExceptionName}>
                       <TableCell>
                         <Checkbox />
                       </TableCell>
@@ -289,8 +292,10 @@ function App() {
                         <div onClick={cellClickHandler}>{ExceptionName}</div>
                       </TableCell>
                       <TableCell>{RCA}</TableCell>
-                      <TableCell>{ErrorTitle}</TableCell>
-                      <TableCell>{ErrorMain}</TableCell>
+                      <TableCell>{ExceptionCategory}</TableCell>
+                      <TableCell>{CountPerError}</TableCell>
+                      <TableCell>{TimeofFirstOccurance}</TableCell>
+                      <TableCell>{TimeofLastOccurance}</TableCell>
                     </TableRow>
                   );
                 }
@@ -318,7 +323,8 @@ function App() {
           </DialogActions>
         </Dialog>
 
-        <h1>Please input your analysis:</h1>
+        <h1>Please input your analysis: <Comment/></h1>
+               
       </main>
     </div>
   );
